@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Логопедия: звуки С, Ш, Р, Л — тренажёр</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e4b6e, #0f2c3f);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Comic Neue', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .login-overlay, .menu-overlay, .game-box {
+            background: #fef9ef;
+            border-radius: 72px;
+            box-shadow: 0 30px 35px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 720px;
+            transition: 0.2s;
+        }
+
+        .login-overlay, .menu-overlay {
+            padding: 30px 25px 40px;
+            text-align: center;
+        }
+
+        .game-box {
+            overflow: hidden;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2d3e2b;
+            margin-bottom: 15px;
+        }
+
+        .login-sub {
+            color: #b5672e;
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+
+        .password-input {
+            width: 80%;
+            padding: 14px 20px;
+            font-size: 1.2rem;
+            border: 3px solid #ffbc6b;
+            border-radius: 60px;
+            outline: none;
+            text-align: center;
+            background: #fffaf2;
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+
+        .password-input:focus {
+            border-color: #5fad41;
+            box-shadow: 0 0 0 2px #a8e08e;
+        }
+
+        .login-btn {
+            background: #5fad41;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 60px;
+            color: white;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: 0.07s linear;
+            box-shadow: 0 5px 0 #2a6b1a;
+            font-family: inherit;
+        }
+
+        .login-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #2a6b1a;
+        }
+
+        .error-msg {
+            color: #d9534f;
+            background: #ffe6e5;
+            padding: 8px;
+            border-radius: 50px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        .menu-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2d3e2b;
+            margin-bottom: 10px;
+        }
+
+        .menu-sub {
+            color: #b5672e;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        .sound-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .sound-card {
+            background: #fff4e6;
+            border-radius: 60px;
+            padding: 20px;
+            width: 150px;
+            cursor: pointer;
+            transition: 0.1s;
+            border: 3px solid #ffbc6b;
+            text-align: center;
+        }
+
+        .sound-card:active {
+            transform: scale(0.96);
+        }
+
+        .sound-emoji {
+            font-size: 3.8rem;
+        }
+
+        .sound-name {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .sound-desc {
+            font-size: 0.7rem;
+            color: #7a5a3a;
+        }
+
+        .back-menu-btn {
+            background: #ff9f4a;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: #2b2b1f;
+            cursor: pointer;
+            margin: 10px 0 5px 20px;
+            font-family: inherit;
+            box-shadow: 0 3px 0 #b4621a;
+        }
+
+        .back-menu-btn:active {
+            transform: translateY(2px);
+        }
+
+        .header {
+            background: #2d3e2b;
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #ffefcf;
+            border-bottom: 5px solid #f7b05e;
+        }
+
+        .score-area {
+            background: #1f2a1c;
+            padding: 6px 20px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1.7rem;
+            color: #ffcf7a;
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            margin-right: 10px;
+            font-weight: normal;
+            color: #cddcc9;
+        }
+
+        .badge {
+            background: #607d4a;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .click-zone {
+            text-align: center;
+            padding: 30px 25px 20px;
+            background: #fff4e6;
+        }
+
+        .click-image {
+            cursor: pointer;
+            display: inline-block;
+            background: #f3e5c0;
+            border-radius: 70px;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+            border: 5px solid #ffbc6b;
+            transition: 0.05s linear;
+        }
+
+        .click-image:active {
+            transform: scale(0.96);
+        }
+
+        .click-image img {
+            width: 170px;
+            height: 170px;
+            display: block;
+            border-radius: 65px;
+            background: #d9c896;
+        }
+
+        .task-panel {
+            background: #fff3e2;
+            margin: 12px 22px 20px 22px;
+            border-radius: 55px;
+            padding: 18px 20px;
+            text-align: center;
+        }
+
+        .task-title {
+            background: #b5672e;
+            display: inline-block;
+            padding: 6px 25px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .task-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: #ffe1b3;
+            border-radius: 60px;
+            padding: 12px 20px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .task-emoji-img {
+            font-size: 4rem;
+            background: white;
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+            background: #fff6e8;
+        }
+
+        .task-text {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #4a2c12;
+            font-family: monospace;
+            word-break: break-word;
+            text-align: center;
+            flex: 1;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #7a5a3a;
+            margin: 8px 0 5px;
+        }
+
+        .confirm-btn {
+            background: #5fad41;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 12px 20px;
+            border-radius: 50px;
+            color: white;
+            width: 80%;
+            margin-top: 14px;
+            cursor: pointer;
+            transition: 0.07s linear;
+            box-shadow: 0 5px 0 #2a6b1a;
+            font-family: inherit;
+        }
+
+        .confirm-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #2a6b1a;
+        }
+
+        .confirm-btn:disabled {
+            background: #b9b297;
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .feedback-message {
+            background: #ebddcb;
+            margin: 5px 22px 15px 22px;
+            border-radius: 50px;
+            padding: 12px 15px;
+            font-weight: bold;
+            color: #be6a1a;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .reset-button {
+            background: #ff9f4a;
+            width: calc(100% - 44px);
+            margin: 5px 22px 10px 22px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 60px;
+            color: #2b2b1f;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 5px 0 #b4621a;
+        }
+
+        .reset-button:active {
+            transform: translateY(2px);
+        }
+
+        .history-log {
+            background: #e7dcc8;
+            margin: 8px 22px 22px 22px;
+            border-radius: 35px;
+            padding: 12px 18px;
+            font-size: 0.75rem;
+            color: #4a3922;
+            max-height: 110px;
+            overflow-y: auto;
+        }
+
+        footer {
+            background: #cfc2aa;
+            text-align: center;
+            font-size: 0.7rem;
+            padding: 10px;
+            color: #2b3b1f;
+        }
+
+        @media (max-width: 550px) {
+            .task-text { font-size: 1.2rem; }
+            .click-image img { width: 130px; height: 130px; }
+            .task-emoji-img { font-size: 2.5rem; width: 65px; height: 65px; }
+            .sound-card { width: 130px; padding: 15px; }
+            .sound-name { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ЭКРАН ВХОДА -->
+<div id="loginScreen" class="login-overlay">
+    <div class="login-title">🔐 ЛОГОПЕДИЧЕСКИЙ ТРЕНАЖЁР</div>
+    <div class="login-sub">Введи пароль, чтобы тренировать звуки</div>
+    <input type="password" id="passwordInput" class="password-input" placeholder="Пароль" autocomplete="off">
+    <br>
+    <button id="loginBtn" class="login-btn">🚪 Войти</button>
+    <div id="loginError" class="error-msg" style="display: none;">❌ Неверный пароль! Попробуй ещё раз.</div>
+</div>
+
+<!-- МЕНЮ ВЫБОРА ЗВУКА -->
+<div id="menuScreen" class="menu-overlay hidden">
+    <div class="menu-title">🎮 ВЫБЕРИ ЗВУК</div>
+    <div class="menu-sub">Нажми на карточку, чтобы начать</div>
+    <div class="sound-buttons">
+        <div class="sound-card" data-sound="s">
+            <div class="sound-emoji">👅</div>
+            <div class="sound-name">С</div>
+            <div class="sound-desc">свистящий</div>
+        </div>
+        <div class="sound-card" data-sound="sh">
+            <div class="sound-emoji">🐍</div>
+            <div class="sound-name">Ш</div>
+            <div class="sound-desc">шипящий</div>
+        </div>
+        <div class="sound-card" data-sound="r">
+            <div class="sound-emoji">🐯</div>
+            <div class="sound-name">Р</div>
+            <div class="sound-desc">рычащий</div>
+        </div>
+        <div class="sound-card" data-sound="l">
+            <div class="sound-emoji">🦢</div>
+            <div class="sound-name">Л</div>
+            <div class="sound-desc">певучий</div>
+        </div>
+    </div>
+</div>
+
+<!-- ОСНОВНАЯ ИГРА -->
+<div id="gameContainer" class="game-box hidden">
+    <div class="header">
+        <div class="badge" id="soundBadge">🎵 ЗВУК</div>
+        <div class="score-area"><span class="score-label">баллы</span> <span id="scoreDisplay">0</span></div>
+    </div>
+
+    <div class="click-zone">
+        <div class="click-image" id="clickableImg">
+            <img id="soundIcon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffcf8a'/%3E%3Ctext x='50' y='72' font-size='48' text-anchor='middle' fill='%233d8a40' font-weight='bold'%3EС%3C/text%3E%3C/svg%3E" style="width:100%; height:100%; border-radius:65px;">
+        </div>
+        <div style="margin-top: 10px; font-size: 0.7rem; background:#e9ddce; display:inline-block; padding:4px 15px; border-radius:50px;">
+            🎤 нажми → прочитай вслух → нажми галочку
+        </div>
+    </div>
+
+    <div class="task-panel">
+        <div class="task-title">📢 ПРОИЗНЕСИ ПРАВИЛЬНО</div>
+        <div class="task-visual" id="taskVisualBlock">
+            <div class="task-emoji-img" id="taskEmoji">🐍</div>
+            <div class="task-text" id="taskText">ШАПКА</div>
+        </div>
+        <div class="hint" id="hintText">💡 Губы рупором, язык чашечкой</div>
+        <button class="confirm-btn" id="confirmBtn">✅ Выполнил!</button>
+    </div>
+
+    <div class="feedback-message" id="feedbackMsg">👆 Нажми на картинку, чтобы начать</div>
+
+    <button class="reset-button" id="resetGameBtn">🔄 Новая игра (перемешать)</button>
+    <button class="back-menu-btn" id="backToMenuBtn">🏠 Вернуться в меню</button>
+
+    <div class="history-log" id="historyList">📋 <strong>История:</strong> пока пусто</div>
+    <footer>🧠 Нажми на картинку → прочитай вслух → «Выполнил» → +1 балл</footer>
+</div>
+
+<script>
+    // ----- НАБОР ЗАДАНИЙ С ПРАВИЛЬНЫМИ КАРТИНКАМИ (ЭМОДЗИ) -----
+    const TASKS_BY_SOUND = {
+        s: {
+            name: "С",
+            icon: "👅",
+            tasks: [
+                { text: "САМОЛЁТ", hint: "С-с-самолёт. Язык за нижними зубами!", emoji: "✈️" },
+                { text: "СОСНА", hint: "СО-СНА. Два звука С в слове.", emoji: "🌲" },
+                { text: "ЛИСА", hint: "Ли-СА. Чёткий С в конце.", emoji: "🦊" },
+                { text: "СУМКА", hint: "СУМ-КА. Свистим на первом звуке.", emoji: "👜" },
+                { text: "НОС", hint: "НОС. Короткое слово, звук С в конце.", emoji: "👃" },
+                { text: "АВТОБУС", hint: "АвтобуС. Следи за последним С.", emoji: "🚌" },
+                { text: "СОВА", hint: "СОВА. Свистящий в начале.", emoji: "🦉" },
+                { text: "СКАЗКА", hint: "С-КАЗ-КА. Свистим уверенно.", emoji: "📖" }
+            ]
+        },
+        sh: {
+            name: "Ш",
+            icon: "🐍",
+            tasks: [
+                { text: "ШАПКА", hint: "Ш-Ш-АП-КА. Губы рупором!", emoji: "🧢" },
+                { text: "МАШИНА", hint: "Ма-ШИ-на. Ш в середине.", emoji: "🚗" },
+                { text: "КОШКА", hint: "КО-Ш-КА. Шипящий в центре.", emoji: "🐱" },
+                { text: "МЫШКА", hint: "МЫ-Ш-КА. Шипи как мышка.", emoji: "🐭" },
+                { text: "ШУБА", hint: "ШУ-БА. Твёрдый шипящий.", emoji: "🧥" },
+                { text: "ТИШИНА", hint: "Ти-ШИ-на. Красивый Ш.", emoji: "🤫" },
+                { text: "ПОДУШКА", hint: "ПО-ДУ-Шка. Чёткий Ш.", emoji: "🛏️" }
+            ]
+        },
+        r: {
+            name: "Р",
+            icon: "🐯",
+            tasks: [
+                { text: "РЫБА", hint: "Р-Р-ЫБА. Кончик языка дрожит!", emoji: "🐟" },
+                { text: "РУКА", hint: "РУ-КА. Рычим громко.", emoji: "🖐️" },
+                { text: "ТРАВА", hint: "Т-РА-ВА. Звук Р после Т.", emoji: "🌿" },
+                { text: "ДРУГ", hint: "Д-РУГ. Рычим в середине.", emoji: "👫" },
+                { text: "КОРОВА", hint: "КО-РО-ВА. Два звука Р.", emoji: "🐄" },
+                { text: "РОЗА", hint: "РО-ЗА. Красивое рычание.", emoji: "🌹" },
+                { text: "РАК", hint: "РАК. Короткое слово с Р.", emoji: "🦞" }
+            ]
+        },
+        l: {
+            name: "Л",
+            icon: "🦢",
+            tasks: [
+                { text: "ЛУНА", hint: "Л-Л-УНА. Язык упирается в нёбо.", emoji: "🌙" },
+                { text: "МОЛОКО", hint: "МО-ЛО-КО. Три звука Л.", emoji: "🥛" },
+                { text: "ЛОШАДЬ", hint: "ЛО-ШАДЬ. Твёрдый Л в начале.", emoji: "🐴" },
+                { text: "ПАЛКА", hint: "ПАЛ-КА. Л в середине.", emoji: "🏑" },
+                { text: "СТОЛ", hint: "СТОЛ. Мягкий Л на конце.", emoji: "🪑" },
+                { text: "ЛАМПА", hint: "ЛАМ-ПА. Л в начале.", emoji: "💡" },
+                { text: "БЕЛКА", hint: "БЕЛ-КА. Мягкий Л.", emoji: "🐿️" }
+            ]
+        }
+    };
+
+    function shuffleArray(arr) {
+        const array = [...arr];
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    let currentTasks = [];
+    let currentTaskIdx = 0;
+    let currentPoints = 0;
+    let waitingForConfirm = false;
+    let completedHistory = [];
+    let currentSoundId = null;
+
+    // DOM элементы
+    const loginScreen = document.getElementById('loginScreen');
+    const menuScreen = document.getElementById('menuScreen');
+    const gameContainer = document.getElementById('gameContainer');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+    const soundBadge = document.getElementById('soundBadge');
+    const scoreSpan = document.getElementById('scoreDisplay');
+    const taskTextSpan = document.getElementById('taskText');
+    const taskEmojiSpan = document.getElementById('taskEmoji');
+    const hintSpan = document.getElementById('hintText');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const resetBtn = document.getElementById('resetGameBtn');
+    const backToMenuBtn = document.getElementById('backToMenuBtn');
+    const clickImage = document.getElementById('clickableImg');
+    const soundIconImg = document.getElementById('soundIcon');
+    const feedbackSpan = document.getElementById('feedbackMsg');
+    const historyDiv = document.getElementById('historyList');
+
+    function updateScoreUI() { scoreSpan.innerText = currentPoints; }
+    
+    function updateHistoryUI() {
+        if (completedHistory.length === 0) {
+            historyDiv.innerHTML = `📋 <strong>История:</strong> пока пусто`;
+            return;
+        }
+        let html = `📋 <strong>✅ Произнесено:</strong><br>`;
+        for (let i = 0; i < Math.min(completedHistory.length, 7); i++) {
+            html += `• ${completedHistory[i]}<br>`;
+        }
+        historyDiv.innerHTML = html;
+    }
+
+    function addToHistory(taskText, emoji) {
+        const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        completedHistory.unshift(`[${time}] ${emoji} “${taskText}”`);
+        if (completedHistory.length > 10) completedHistory.pop();
+        updateHistoryUI();
+    }
+
+    function displayCurrentTask() {
+        if (currentTaskIdx < currentTasks.length) {
+            const task = currentTasks[currentTaskIdx];
+            taskTextSpan.innerText = task.text;
+            taskEmojiSpan.innerText = task.emoji;
+            hintSpan.innerText = `💡 ${task.hint}`;
+        } else {
+            taskTextSpan.innerText = "🎉 МОЛОДЕЦ! ВСЁ ПРОИЗНЁС! 🎉";
+            taskEmojiSpan.innerText = "🏆";
+            hintSpan.innerText = "✨ Нажми «Новая игра» или вернись в меню.";
+            confirmBtn.disabled = true;
+            waitingForConfirm = false;
+        }
+    }
+
+    function setFeedback(msg, isError = false) {
+        feedbackSpan.innerHTML = isError ? `⚠️ ${msg}` : `✨ ${msg}`;
+        setTimeout(() => {
+            if (!waitingForConfirm && currentTaskIdx < currentTasks.length) {
+                feedbackSpan.innerHTML = `👇 Нажми на картинку, чтобы получить задание.`;
+            }
+        }, 2500);
+    }
+
+    function initGame(soundId) {
+        const soundData = TASKS_BY_SOUND[soundId];
+        if (!soundData) return;
+        currentSoundId = soundId;
+        currentTasks = shuffleArray(soundData.tasks);
+        currentTaskIdx = 0;
+        currentPoints = 0;
+        waitingForConfirm = false;
+        completedHistory = [];
+        
+        soundBadge.innerHTML = `🎵 ЗВУК [${soundData.name}]`;
+        const colors = { s: '#3d8a40', sh: '#bd7a3a', r: '#d9534f', l: '#4285f4' };
+        const color = colors[soundId] || '#ffcf8a';
+        soundIconImg.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffcf8a'/%3E%3Ctext x='50' y='72' font-size='48' text-anchor='middle' fill='${color.replace('#', '%23')}' font-weight='bold'%3E${soundData.name}%3C/text%3E%3C/svg%3E`;
+        
+        updateScoreUI();
+        updateHistoryUI();
+        
+        if (currentTasks.length > 0) {
+            const first = currentTasks[0];
+            taskTextSpan.innerText = first.text;
+            taskEmojiSpan.innerText = first.emoji;
+            hintSpan.innerText = `💡 ${first.hint}`;
+        }
+        confirmBtn.disabled = true;
+        confirmBtn.style.opacity = "0.6";
+        setFeedback(`🎲 Игра на звук [${soundData.name}] готова! Нажми на картинку.`);
+    }
+
+    function completeCurrentTask() {
+        if (!waitingForConfirm) {
+            setFeedback("Сначала нажми на картинку, чтобы взять задание!", true);
+            return;
+        }
+        if (currentTaskIdx >= currentTasks.length) {
+            setFeedback("Все задания выполнены! Нажми «Новая игра».", true);
+            return;
+        }
+        const task = currentTasks[currentTaskIdx];
+        currentPoints++;
+        updateScoreUI();
+        addToHistory(task.text, task.emoji);
+        setFeedback(`Отлично! +1 балл. Ты произнёс(ла) «${task.text}»!`);
+        
+        currentTaskIdx++;
+        if (currentTaskIdx < currentTasks.length) {
+            const next = currentTasks[currentTaskIdx];
+            taskTextSpan.innerText = next.text;
+            taskEmojiSpan.innerText = next.emoji;
+            hintSpan.innerText = `💡 ${next.hint}`;
+            waitingForConfirm = false;
+            confirmBtn.disabled = true;
+            confirmBtn.style.opacity = "0.6";
+            setFeedback("🎤 Нажми на картинку, чтобы взять следующее задание!");
+        } else {
+            taskTextSpan.innerText = "🏆 ВСЕ ЗАДАНИЯ ВЫПОЛНЕНЫ! 🏆";
+            taskEmojiSpan.innerText = "🎉🥳";
+            confirmBtn.disabled = true;
+            waitingForConfirm = false;
+            setFeedback("Поздравляю! Ты справился!");
+        }
+    }
+
+    function onImageClick() {
+        if (currentTaskIdx >= currentTasks.length) {
+            setFeedback("Игра пройдена! Нажми «Новая игра» или вернись в меню.", true);
+            return;
+        }
+        if (waitingForConfirm) {
+            setFeedback("Ты уже взял задание! Произнеси и нажми «Выполнил».", true);
+            return;
+        }
+        const task = currentTasks[currentTaskIdx];
+        waitingForConfirm = true;
+        confirmBtn.disabled = false;
+        confirmBtn.style.opacity = "1";
+        setFeedback(`🎙️ Произнеси: «${task.text}». Смотри на картинку!`);
+    }
+
+    function resetGame() {
+        if (currentTasks.length > 0 && currentSoundId) {
+            const soundData = TASKS_BY_SOUND[currentSoundId];
+            if (soundData) {
+                currentTasks = shuffleArray(soundData.tasks);
+                currentTaskIdx = 0;
+                currentPoints = 0;
+                waitingForConfirm = false;
+                completedHistory = [];
+                updateScoreUI();
+                updateHistoryUI();
+                const first = currentTasks[0];
+                taskTextSpan.innerText = first.text;
+                taskEmojiSpan.innerText = first.emoji;
+                hintSpan.innerText = `💡 ${first.hint}`;
+                confirmBtn.disabled = true;
+                confirmBtn.style.opacity = "0.6";
+                setFeedback("🎲 Задания перемешаны! Нажми на картинку.");
+            }
+        }
+    }
+
+    function backToMenu() {
+        gameContainer.classList.add('hidden');
+        menuScreen.classList.remove('hidden');
+    }
+
+    // --- ПРОВЕРКА ПАРОЛЯ ТОЛЬКО "Ваня" (с учётом регистра, но с защитой от случайных пробелов) ---
+    loginBtn.addEventListener('click', () => {
+        const pwd = passwordInput.value.trim();  // убираем пробелы в начале и конце
+        
+        if (pwd === "Ваня") {
+            loginScreen.classList.add('hidden');
+            menuScreen.classList.remove('hidden');
+            loginError.style.display = 'none';
+            passwordInput.value = '';
+        } else {
+            loginError.style.display = 'block';
+            passwordInput.value = '';
+        }
+    });
+
+    passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') loginBtn.click();
+    });
+
+    document.querySelectorAll('.sound-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const sound = card.getAttribute('data-sound');
+            initGame(sound);
+            menuScreen.classList.add('hidden');
+            gameContainer.classList.remove('hidden');
+        });
+    });
+
+    confirmBtn.addEventListener('click', completeCurrentTask);
+    resetBtn.addEventListener('click', resetGame);
+    backToMenuBtn.addEventListener('click', backToMenu);
+    clickImage.addEventListener('click', onImageClick);
+</script>
+</body>
+</html>
